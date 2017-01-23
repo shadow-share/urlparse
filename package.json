@@ -1,0 +1,23 @@
+{
+  "name": "urlparse",
+  "version": "1.0.0",
+  "description": "urlparse.js base Python urllib module",
+  "main": "src/urlparse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/shadow-share/urlparse.git"
+  },
+  "keywords": [
+    "library",
+    "urlparse"
+  ],
+  "author": "ShadowMan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shadow-share/urlparse/issues"
+  },
+  "homepage": "https://github.com/shadow-share/urlparse#readme"
+}
