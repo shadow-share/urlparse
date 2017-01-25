@@ -2,6 +2,19 @@
 
 const scheme_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-.';
 
+const uses_params = [
+    'ftp', 'hdl', 'prospero', 'http', 'imap',
+    'https', 'shttp', 'rtsp', 'rtspu', 'sip',
+    'sips', 'mms', '', 'sftp', 'tel'
+]
+
+const uses_netloc = [
+    'ftp', 'http', 'gopher', 'nntp', 'telnet',
+    'imap', 'wais', 'file', 'mms', 'https', 'shttp',
+    'snews', 'prospero', 'rtsp', 'rtspu', 'rsync', '',
+    'svn', 'svn+ssh', 'sftp','nfs','git', 'git+ssh'
+]
+
 /**
  * Result Classes
  *
@@ -10,12 +23,12 @@ class SplitResult {
     /**
      * constructor
      */
-    constructor(scheme, netloc, url, query, fragment) {
+    constructor(scheme, netloc, path, query, fragment) {
         this._fragment = fragment;
         this._scheme = scheme;
         this._netloc = netloc;
         this._query = query;
-        this._url = url;
+        this._path = path;
     }
 
     get username() {
@@ -91,8 +104,8 @@ class SplitResult {
         return this._netloc;
     }
 
-    get url() {
-        return this._url;
+    get path() {
+        return this._path;
     }
 
     get query() {
@@ -101,6 +114,25 @@ class SplitResult {
 
     get fragment() {
         return this._fragment;
+    }
+}
+
+class ParseResult extends SplitResult {
+    /**
+     * constructor
+     */
+    constructor(scheme, netloc, path, params, query, fragment) {
+        super(scheme, netloc, path, query, fragment);
+
+        this._params = params;
+    }
+
+    get params() {
+        return this._params;
+    }
+
+    get_url() {
+        return urlunparse(this._scheme, this._netloc, this._path, this._params, this._query, this._fragment);
     }
 }
 
@@ -133,7 +165,7 @@ function _split_netloc(url, start = 0) {
  * @return object
  * @params url String
  */
-export default function urlparse(url, scheme = '', allow_fragments = true) {
+function _url_split(url, scheme = '', allow_fragments = true) {
     let fragment = '';
     let netloc = '';
     let query = '';
@@ -231,3 +263,59 @@ export default function urlparse(url, scheme = '', allow_fragments = true) {
     return new SplitResult(scheme, netloc, url, query, fragment);
 }
 
+function _split_params(url) {
+    let index = -1;
+    if (url.includes('/')) {
+        index = url.indexOf(';', url.lastIndexOf('/'));
+
+        if (index < 0) {
+            return [ url, '' ];
+        }
+    } else {
+        index = url.indexOf(';');
+    }
+
+    return [ url.substr(0, index), url.substr(index + 1) ];
+}
+
+function urlparse(url, scheme = '', allow_fragments = true) {
+    let split_result = _url_split(url, scheme, allow_fragments);
+    let params_split_result = '';
+
+    if (uses_params.includes(split_result.scheme) && url.includes(';')) {
+        params_split_result = _split_params(url);
+    } else {
+        params_split_result = [ split_result.path, '' ];
+    }
+
+    return new ParseResult(split_result.scheme, split_result.netloc, params_split_result[0], params_split_result[1], split_result.query, split_result.fragment);
+}
+
+function _url_unsplit(scheme, netloc, url, query, fragment) {
+    if (netloc || (scheme && uses_netloc.includes(netloc) && url.substr(0, 2) !== '//')) {
+        if (url && url.substr(0, 1) !== '/') {
+            url = '/' + url;
+        }
+
+        url = '//' + (netloc || '') + url;
+    }
+    if (scheme) {
+        url = scheme + ':' + url;
+    }
+    if (query) {
+        url = url + '?' + query;
+    }
+    if (fragment) {
+        url = url + '#' + fragment;
+    }
+
+    return url;
+}
+
+function urlunparse(scheme, netloc, url, params, query, fragment) {
+    if (params.length) {
+        url = url + ';' + params;
+    }
+
+    return _url_unsplit(scheme, netloc, url, query, fragment);
+}

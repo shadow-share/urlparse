@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/shadow-share/urlparse/issues"
   },
-  "homepage": "https://github.com/shadow-share/urlparse#readme"
+  "homepage": "https://github.com/shadow-share/urlparse#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-uglify": "^2.0.0"
+  }
 }
