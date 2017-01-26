@@ -4,7 +4,7 @@
   "description": "urlparse.js base Python urllib module",
   "main": "src/urlparse.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,14 @@
   },
   "homepage": "https://github.com/shadow-share/urlparse#readme",
   "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-preset-env": "^1.1.8",
+    "babel-preset-es2015": "^6.22.0",
     "grunt": "^1.0.1",
-    "grunt-contrib-uglify": "^2.0.0"
+    "grunt-babel": "^6.0.0",
+    "grunt-contrib-qunit": "^1.2.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "gruntify-eslint": "^3.1.0"
   }
 }

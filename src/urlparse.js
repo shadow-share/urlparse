@@ -1,19 +1,17 @@
-"use strict"
+/*!
+ * urlparse
+ * 
+ * @description: urlparse javascript library, base on python urllib module
+ * @author: ShadowMan
+ * @license: MIT
+ * @emil: shadowman@shellboot.com
+ * 
+ */
+'use strict';
 
 const scheme_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-.';
-
-const uses_params = [
-    'ftp', 'hdl', 'prospero', 'http', 'imap',
-    'https', 'shttp', 'rtsp', 'rtspu', 'sip',
-    'sips', 'mms', '', 'sftp', 'tel'
-]
-
-const uses_netloc = [
-    'ftp', 'http', 'gopher', 'nntp', 'telnet',
-    'imap', 'wais', 'file', 'mms', 'https', 'shttp',
-    'snews', 'prospero', 'rtsp', 'rtspu', 'rsync', '',
-    'svn', 'svn+ssh', 'sftp','nfs','git', 'git+ssh'
-]
+const uses_params = [ 'ftp', 'hdl', 'prospero', 'http', 'imap', 'https', 'shttp', 'rtsp', 'rtspu', 'sip', 'sips', 'mms', '', 'sftp', 'tel' ];
+const uses_netloc = [ 'ftp', 'http', 'gopher', 'nntp', 'telnet', 'imap', 'wais', 'file', 'mms', 'https', 'shttp', 'snews', 'prospero', 'rtsp', 'rtspu', 'rsync', '', 'svn', 'svn+ssh', 'sftp','nfs','git', 'git+ssh' ];
 
 /**
  * Result Classes
@@ -140,14 +138,14 @@ function _split_netloc(url, start = 0) {
     let delim = url.length;
 
     for (let char_index in [ '/', '?', '#' ]) {
-        let char = [ '/', '?', '#' ][char_index]
+        let char = [ '/', '?', '#' ][char_index];
         let wdelim = url.indexOf(char, start);
 
         if (wdelim >= 0) {
             delim = Math.min(delim, wdelim);
         }
     }
-    return { "domain": url.substr(start, delim - start), "rest": url.substr(delim) }
+    return { 'domain': url.substr(start, delim - start), 'rest': url.substr(delim) };
 }
 
 /**!
@@ -188,7 +186,7 @@ function _url_split(url, scheme = '', allow_fragments = true) {
 
                 if ((netloc.includes('[') && !netloc.includes(']'))
                     || (netloc.includes(']') && !netloc.includes('['))) {
-                    throw new error('Invalid IPv6 URL');
+                    throw 'Invalid IPv6 URL';
                 }
             }
 
@@ -242,7 +240,7 @@ function _url_split(url, scheme = '', allow_fragments = true) {
 
         if ((netloc.includes('[') && !netloc.includes(']'))
             || (netloc.includes(']') && !netloc.includes('['))) {
-            throw new error('Invalid IPv6 URL');
+            throw 'Invalid IPv6 URL';
         }
     }
 
@@ -278,7 +276,7 @@ function _split_params(url) {
     return [ url.substr(0, index), url.substr(index + 1) ];
 }
 
-function urlparse(url, scheme = '', allow_fragments = true) {
+export default function urlparse(url, scheme = '', allow_fragments = true) {
     let split_result = _url_split(url, scheme, allow_fragments);
     let params_split_result = '';
 
