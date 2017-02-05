@@ -276,7 +276,7 @@ function _split_params(url) {
     return [ url.substr(0, index), url.substr(index + 1) ];
 }
 
-export default function urlparse(url, scheme = '', allow_fragments = true) {
+function urlparse(url, scheme = '', allow_fragments = true) {
     let split_result = _url_split(url, scheme, allow_fragments);
     let params_split_result = '';
 
@@ -317,3 +317,14 @@ function urlunparse(scheme, netloc, url, params, query, fragment) {
 
     return _url_unsplit(scheme, netloc, url, query, fragment);
 }
+
+// main function exported under different environments
+(function() {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        module.exports = urlparse;
+    } else if (typeof window === 'object') {
+        window.urlparse = urlparse;
+    } else {
+        throw new Error('no can be used to export the environment');
+    }
+})();
